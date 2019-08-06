@@ -127,7 +127,6 @@
 通常只提供静态方法和静态字段的类，需要对构造器私有化处理。
 
 
-
 ## 第5 条 优先考虑依赖注人来引用资源
 
 - 什么场景下使用依赖注入？
@@ -141,4 +140,110 @@
 
 依赖注入虽然灵活，易于测试，但是当依赖过多和关系复杂时就难以维护。
 
+
+
+## 第6条 避免创建不必要的对象
+
+> 哪些场景下可以重用对象?
+
+重用对象可以提供性能。
+
+对于不可变的对象来说，一直是可以被重用的。
+
+对于已知不会被修改的可变对象，也可以重用。
+
+> 如何重用对象？
+
+- 自动装箱会创建多余对象，应该优先使用基本类型。
+
+- 针对重量级对象，合理利用对象池，比如数据库连接池，线程池。
+
+- 使用正则表达式，单独声明 Pattern 实例再使用
+
+## 第7条 消除过期的对象引用
+
+> 怎么算过期的引用
+
+过期引用 （ obsolete reference ）: 永远也不会再被解除的引用，但不会被访问到。
+
+过期引用会导致出现内存泄漏，需要及时地清空引用。
+
+当类自己管理内存时，就应该警惕内存泄漏问题，及时清空不被使用的引用。
+
+常见的过期引用场景：
+
+- 自动管理内存
+
+- 缓存
+- 监听器和回调，用弱引用处理
+
+
+
+如何发现内存泄漏
+
+1. 仔细检查代码
+2. 借助 Heap 剖析工具，如 MAT。
+
+
+
+## 第8条 避免使用finalize方法和cleaner方法
+
+> 为什么不要使用这些方法？
+
+这些方法执行跟 JVM 相关;
+
+严重拖慢性能;
+
+存在安全问题，执行恶意的 finalize 方法，形成攻击。
+
+
+
+## 第9条 try-with-resources 优先于 try-finally
+
+Java 7 引入 try-with-resource 语句，资源类实现 `AutoCloseable` 接口
+
+ try-with-resource 支持 
+
+```java
+static String firstLineOfFile(String path) throws IOException {
+  try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+    return br.readLine();
+  }
+}
+
+static void copy(String src, String dest) throws IOException {
+  try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
+    byte[] buffer = new byte[1024];
+    int n;
+    while ((n = in.read(buffer)) >= 0) {
+      out.write(buffer, 0, n);
+    }
+  }
+}
+```
+
+### 小结
+
+在处理必须关闭的资源时，始终要优先考虑用 try-with-resources ，而不是 用 try-finally 。 这样得到的代码将更加简洁、清晰，产生的异常也更有价值。
+
+
+
+## 第10条 覆盖 equals 时请遵守通用约定
+
+不要随意覆盖 equals 方法：
+
+- 类的每个实例本质上都是唯一的
+- 类没有必要提供“逻辑相等”（ logical equality ）的测试功能
+- 超类已经覆盖了 equals ，超类的行为对于这个 类 也是合适的
+- 类是私有的 ， 或者是包级私有的 ， 可以确定它的 equals 方法永远不会 被调用 。
+
+
+
+如何实现 equals 方法：
+
+1. 使用＝＝操作符检查“参数是否为这个对象的引用”。
+2. 使用 instanceof 操作符检查“参数是否为正确的类型”。
+3. 把参数转换成正确的类型。
+4. 对于该类中的每个“关键”（ significant ）字段，检查参数中的字段是否与该对象中对应的字段相匹配。
+5. 覆盖 equals 时总要覆盖 hashCode。
 
