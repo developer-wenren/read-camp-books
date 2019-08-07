@@ -247,3 +247,61 @@ static void copy(String src, String dest) throws IOException {
 4. 对于该类中的每个“关键”（ significant ）字段，检查参数中的字段是否与该对象中对应的字段相匹配。
 5. 覆盖 equals 时总要覆盖 hashCode。
 
+##  第11条 覆写 equals 方法总要覆盖 hashCode 方法
+
+> 为什么需要这样做？
+
+在一些基于`Hash` 的集合里就无法正常的工作，如 `HashMap`，`HashSet`。
+
+两个对象 `equals` 方法不相等，`hashCode` 方法不一定也相等，但尽量保证两个方法的一致
+
+> 如何正确地覆写 `hashCode` 方法
+
+结合对象的关键字段进行组合 `hash` 作为对象的 `hashCode` 。
+
+```java
+@Override public int hashCode() {
+	return Objects.hash(linenum, prefix, areacode)
+}
+```
+
+注意：如果计算对象的哈希码开销较大时，可以考虑缓存方式，延迟加载初始化 `hashCode`。
+
+## 第12条 始终覆盖 toString 方法
+
+提供自定义的 `toString` 实现，在日志打印时让对象更加容易查看，便于调试，将方法里返回对象包含的所有需要关注的值。
+
+## 第13条 不要轻易覆盖 clone 方法
+
+`clone` 方法的作用就是可以无须调用构造器就可以创建对象。
+
+`clone` 方法与可变对象的 final 字段不兼容。
+
+如何克隆复杂对象是，先调用 `super . clone` 方法，然后把结果对象中的 所有域都设置成它们 的初始状态（ initial state ），然后调用高层（ higher-level ）的方法来重 新产生对象的状态 。
+
+对象拷贝的更好的办法是提供一个拷贝构造器（ copy constructor）或拷贝工厂（ copy factory ）
+
+
+
+## 第14条 考虑实现 Comparable 接口
+
+如果实现了 `Comparable` 接口，那么在通常情况下应该返回与 `equals` 方法同样的结果。
+
+如果第一个值小于第二个值，则为负；如果两个值相等 ，则为零 ；如果第一个值大于第二个值，则为正 。
+
+需要比较时，可以使用 Comparator 接口中比较器构造方法。
+
+
+
+## 第15条 使类和成员的可访问性最小化
+
+也叫做封装，尽可能地使每个类或者成员不被外界访问 。
+
+可访问性关键字从低到高：
+
+- private
+- package-private 默认
+- protected
+- public
+
+公共类都不应该包含 `public` 字段，并且 要确保公有静态 `final` 域所引用的对象都是不可变的 。
