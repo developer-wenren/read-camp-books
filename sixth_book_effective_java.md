@@ -306,6 +306,8 @@ static void copy(String src, String dest) throws IOException {
 
 公共类都不应该包含 `public` 字段，并且 要确保公有静态 `final` 域所引用的对象都是不可变的 。
 
+
+
 ## 第 16 条：要在公共类使用方法访问字段，而不是将其公开
 
 如果类可以在它所在的包之外进行访问，就应该提供访问方法。
@@ -780,4 +782,40 @@ Java 类型系统组成：基本类型 + 引用类型。装箱基本类型就是
 ## 第 68 条：遵守普遍接受的命名惯例
 
 可以借鉴 《 The Java Language Specification 》中的命名惯例，把标准的命名惯例当作一种内在的机制来看待。
+
+## 第 69 条：只针对异常的情况才使用异常
+
+异常机制的设计初衷是用于不正常的情形，当代码防止try-catch 块中会阻止 JVM 特定的优化。
+
+基于异常的模式比标准模式要慢得多 ，因此异常应该只用于异常的情况下；它们永远不应该
+
+用于正常的控制流。
+
+## 第 70 条：对可恢复的情况使用受检查异常，对编程错误采用运行时异常
+
+如果期望调用者能够适当地恢复 ， 对于这种情况就应该使用受检查异常。如果是编程错误，用运行时异常。
+
+## 第 71 条：避免不必要地使用受检异常
+
+在谨慎使用的前提之下，受检异常可以提升程序的可读性；如果过度使用， 将会使 API 使用起来非常痛苦。
+
+## 第 72 条：优先使用标准的异常
+
+重用 Java 平台类库提供了一组基本标准的未受检查异常。
+
+- 使 API 更易于学习和使用
+- 可读性会更好
+
+常见重用的异常：`IllegalArgumentException`，`IllegalStateException`，`UnsupportedOperationException`。
+
+不要直接重用 `Exception` ，`RuntimeException`，`Throwable`，`Error`。
+
+![image-20190820221626410](/Users/One/Library/Application%20Support/typora-user-images/image-20190820221626410.png)
+
+## 第 73 条：抛出与抽象对应的异常
+
+异常转译：更高层的实现应该捕获低层的异常，同时抛出可以按照高层抽象进行解释的异常 。
+
+![image-20190820221731520](/Users/One/Library/Application%20Support/typora-user-images/image-20190820221731520.png)
+
 
