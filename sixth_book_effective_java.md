@@ -810,12 +810,10 @@ Java 类型系统组成：基本类型 + 引用类型。装箱基本类型就是
 
 不要直接重用 `Exception` ，`RuntimeException`，`Throwable`，`Error`。
 
-![image-20190820221626410](/Users/One/Library/Application%20Support/typora-user-images/image-20190820221626410.png)
 
 ## 第 73 条：抛出与抽象对应的异常
 
 异常转译：更高层的实现应该捕获低层的异常，同时抛出可以按照高层抽象进行解释的异常 。
 
-![image-20190820221731520](/Users/One/Library/Application%20Support/typora-user-images/image-20190820221731520.png)
 
 
